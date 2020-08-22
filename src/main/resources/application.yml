@@ -3,3 +3,17 @@ spring:
     name: video-conference-app
   banner:
     location: classpath:banner.txt
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/postgres
+    username: postgres
+    password: postgres
+    hikari:
+      auto-commit: false
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+jwt:
+  secret-key: video-conference-app
+  token-validity-in-seconds: 86400000

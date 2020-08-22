@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+  pg-database:
+    container_name: postgres
+    image: debezium/postgres:12
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    restart: on-failure
