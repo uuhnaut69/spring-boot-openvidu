@@ -11,3 +11,11 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     restart: on-failure
+
+  openvidu-service:
+    container_name: openvidu-service
+    image: openvidu/openvidu-server-kms
+    environment:
+      - OPENVIDU_SECRET=MY_SECRET
+    ports:
+      - 4443:4443
