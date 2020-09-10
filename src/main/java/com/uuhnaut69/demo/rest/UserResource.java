@@ -1,6 +1,5 @@
 package com.uuhnaut69.demo.rest;
 
-import com.uuhnaut69.demo.model.User;
 import com.uuhnaut69.demo.rest.payload.request.UserRequest;
 import com.uuhnaut69.demo.rest.payload.response.GenericResponse;
 import com.uuhnaut69.demo.security.JwtFilter;

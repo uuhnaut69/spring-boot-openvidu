@@ -12,6 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+import java.util.UUID;
+
 /**
  * @author uuhnaut
  * @project openvidu
@@ -42,5 +45,11 @@ public class UserServiceImpl implements UserService {
     return userRepository
         .findByUsernameIgnoreCase(username)
         .orElseThrow(() -> new UsernameNotFoundException("Not found !!!"));
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public Set<User> findUsersByUsernameIn(Set<String> usernameSet) {
+    return userRepository.findAllByUsernameIn(usernameSet);
   }
 }
