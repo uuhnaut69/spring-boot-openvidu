@@ -32,8 +32,9 @@ public class ConversationResource {
     return new GenericResponse(conversation);
   }
 
-  @GetMapping(path = "/{conversationId}")
+  @PostMapping(path = "/{conversationId}")
   public GenericResponse makeACall(@PathVariable UUID conversationId) {
-    return openViduService.createSession(conversationId);
+    String token = openViduService.createSession(conversationId);
+    return new GenericResponse(token);
   }
 }

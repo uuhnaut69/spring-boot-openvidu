@@ -3,6 +3,7 @@ package com.uuhnaut69.demo.service.impl;
 import com.uuhnaut69.demo.model.Conversation;
 import com.uuhnaut69.demo.model.User;
 import com.uuhnaut69.demo.repository.ConversationRepository;
+import com.uuhnaut69.demo.rest.exception.NotFoundException;
 import com.uuhnaut69.demo.rest.payload.request.ConversationRequest;
 import com.uuhnaut69.demo.service.ConversationService;
 import com.uuhnaut69.demo.service.UserService;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import static com.uuhnaut69.demo.security.SecurityUtils.getCurrentUserLogin;
 
@@ -40,5 +42,13 @@ public class ConversationServiceImpl implements ConversationService {
     }
     conversation.setTitle(conversationRequest.getTitle());
     return conversationRepository.save(conversation);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public Conversation findById(UUID conversationId) {
+    return conversationRepository
+        .findById(conversationId)
+        .orElseThrow(() -> new NotFoundException("Conversation not found!!!"));
   }
 }

@@ -1,5 +1,6 @@
 package com.uuhnaut69.demo.rest;
 
+import com.uuhnaut69.demo.model.User;
 import com.uuhnaut69.demo.rest.payload.request.UserRequest;
 import com.uuhnaut69.demo.rest.payload.response.GenericResponse;
 import com.uuhnaut69.demo.security.JwtFilter;
@@ -12,10 +13,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+import static com.uuhnaut69.demo.security.SecurityUtils.getCurrentUserLogin;
 
 /**
  * @author uuhnaut
@@ -50,5 +52,15 @@ public class UserResource {
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
     return new GenericResponse(jwt);
+  }
+
+  @GetMapping(path = "/my-profile")
+  public GenericResponse getMyProfile() {
+    Optional<String> currentUsernameLogin = getCurrentUserLogin();
+    if (currentUsernameLogin.isPresent()) {
+      User currentUser = userService.findByUsername(currentUsernameLogin.get());
+      return new GenericResponse(currentUser);
+    }
+    return new GenericResponse();
   }
 }
