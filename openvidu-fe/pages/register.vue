@@ -31,9 +31,9 @@
 
         <b-button
           id="register"
-          type="summit"
           variant="primary"
           class="btn-lg btn-block"
+          @click="register(username, password)"
           >Register</b-button
         >
       </b-form>
@@ -44,11 +44,25 @@
 <script>
 export default {
   name: 'Register',
+  auth: false,
   data() {
     return {
       username: null,
       password: null,
     }
+  },
+  methods: {
+    async register(username, password) {
+      try {
+        await this.$axios.$post('/register', {
+          username,
+          password,
+        })
+        this.$router.push('/login')
+      } catch (error) {
+        console.log(error)
+      }
+    },
   },
 }
 </script>

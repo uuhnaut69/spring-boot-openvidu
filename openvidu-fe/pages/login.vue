@@ -31,11 +31,12 @@
 
         <b-button
           id="register"
-          type="summit"
           variant="primary"
           class="btn-lg btn-block"
+          @click="authenticate(username, password)"
           >Sign In</b-button
         >
+        <a class="font-weight-normal" href="/register">Register</a>
       </b-form>
     </div>
   </div>
@@ -49,6 +50,20 @@ export default {
       username: null,
       password: null,
     }
+  },
+  methods: {
+    async authenticate(username, password) {
+      try {
+        await this.$auth.loginWith('local', {
+          data: {
+            username,
+            password,
+          },
+        })
+      } catch (err) {
+        console.log(err)
+      }
+    },
   },
 }
 </script>

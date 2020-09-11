@@ -7,13 +7,13 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <!-- Right aligned nav items -->
-        <b-navbar-nav class="ml-auto">
+        <b-navbar-nav v-if="loggedIn" class="ml-auto">
           <b-nav-item-dropdown right>
             <!-- Using 'button-content' slot -->
             <template v-slot:button-content>
-              <em>User</em>
+              <b-avatar :src="user.avatarUrl" variant="info"></b-avatar>
             </template>
-            <b-dropdown-item href="#">Sign Out</b-dropdown-item>
+            <b-dropdown-item @click="logout()">Sign Out</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -22,8 +22,20 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'Nav',
+  computed: {
+    ...mapState('auth', ['loggedIn', 'user']),
+  },
+
+  methods: {
+    async logout() {
+      await this.$auth.logout()
+      this.$router.push('/login')
+    },
+  },
 }
 </script>
 

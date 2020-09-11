@@ -1,63 +1,71 @@
 <template>
   <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">openvidu-fe</h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
+    <div class="row">
+      <b-card
+        v-for="conversation in conversations"
+        :key="conversation.id"
+        :title="conversation.title"
+        :img-src="conversation.imageUrl"
+        img-alt="Image"
+        img-top
+        tag="article"
+        style="max-width: 20rem"
+        class="col mr-2"
+      >
+        <b-avatar-group class="mb-3" size="40px">
+          <b-avatar
+            v-for="member in conversation.members"
+            :key="member.id"
+            :src="member.avatarUrl"
+            variant="info"
+          ></b-avatar>
+        </b-avatar-group>
+        <b-button href="/" variant="primary">Make a call</b-button>
+      </b-card>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+import { Client } from '@stomp/stompjs'
+import { mapState } from 'vuex'
+
+export default {
+  name: 'HomePage',
+  async asyncData({ $axios }) {
+    try {
+      const response = await $axios.$get('/my-conversations')
+      return { conversations: response.data }
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  data() {
+    return {
+      conversations: [],
+    }
+  },
+  computed: {
+    ...mapState('auth', ['loggedIn', 'user']),
+  },
+  created() {
+    const client = new Client({
+      brokerURL: 'ws://localhost:15674/ws',
+      connectHeaders: {
+        login: 'guest',
+        passcode: 'guest',
+      },
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
+    })
+    client.onConnect = (frame) => {
+      client.subscribe('/topic/' + this.user.username, (message) => {
+        console.log(JSON.parse(message.body))
+      })
+    }
+    client.onStompError = (frame) => {}
+    client.activate()
+  },
+}
 </script>
-
-<style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
-</style>
