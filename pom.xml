@@ -92,6 +92,11 @@
             <artifactId>openvidu-java-client</artifactId>
             <version>${open-vidu.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-reactor-netty</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

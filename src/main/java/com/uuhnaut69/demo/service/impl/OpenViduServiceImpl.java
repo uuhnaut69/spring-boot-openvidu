@@ -4,6 +4,9 @@ import com.uuhnaut69.demo.model.Conversation;
 import com.uuhnaut69.demo.service.ConversationService;
 import com.uuhnaut69.demo.service.OpenViduService;
 import io.openvidu.java.client.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -57,15 +60,13 @@ public class OpenViduServiceImpl implements OpenViduService {
     return token;
   }
 
+  @Data
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class Notification {
     private String token;
 
     private NotificationType type;
-
-    public Notification(String token, NotificationType type) {
-      this.token = token;
-      this.type = type;
-    }
   }
 
   public enum NotificationType {

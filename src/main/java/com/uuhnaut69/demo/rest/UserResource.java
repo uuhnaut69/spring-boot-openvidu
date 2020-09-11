@@ -5,6 +5,7 @@ import com.uuhnaut69.demo.rest.payload.request.UserRequest;
 import com.uuhnaut69.demo.rest.payload.response.GenericResponse;
 import com.uuhnaut69.demo.security.JwtFilter;
 import com.uuhnaut69.demo.security.TokenProvider;
+import com.uuhnaut69.demo.service.ConversationService;
 import com.uuhnaut69.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +32,8 @@ public class UserResource {
 
   private final TokenProvider tokenProvider;
 
+  private final ConversationService conversationService;
+
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
   @PostMapping(path = "/register")
@@ -54,7 +57,7 @@ public class UserResource {
     return new GenericResponse(jwt);
   }
 
-  @GetMapping(path = "/my-profile")
+  @GetMapping("/my-profile")
   public GenericResponse getMyProfile() {
     Optional<String> currentUsernameLogin = getCurrentUserLogin();
     if (currentUsernameLogin.isPresent()) {
@@ -62,5 +65,10 @@ public class UserResource {
       return new GenericResponse(currentUser);
     }
     return new GenericResponse();
+  }
+
+  @GetMapping("/my-conversations")
+  public GenericResponse getMyConversations() {
+    return new GenericResponse(conversationService.findAllConversationOfCurrentUser());
   }
 }

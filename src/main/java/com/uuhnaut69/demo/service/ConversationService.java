@@ -3,6 +3,7 @@ package com.uuhnaut69.demo.service;
 import com.uuhnaut69.demo.model.Conversation;
 import com.uuhnaut69.demo.rest.payload.request.ConversationRequest;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -14,4 +15,6 @@ public interface ConversationService {
   Conversation create(ConversationRequest conversationRequest);
 
   Conversation findById(UUID conversationId);
+
+  List<Conversation> findAllConversationOfCurrentUser();
 }

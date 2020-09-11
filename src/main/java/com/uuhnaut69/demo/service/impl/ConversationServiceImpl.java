@@ -11,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static com.uuhnaut69.demo.security.SecurityUtils.getCurrentUserLogin;
 
@@ -39,6 +37,7 @@ public class ConversationServiceImpl implements ConversationService {
     if (currentUsernameLogin.isPresent()) {
       User currentUser = userService.findByUsername(currentUsernameLogin.get());
       conversation.setOwner(currentUser);
+      conversation.getMembers().add(currentUser);
     }
     conversation.setTitle(conversationRequest.getTitle());
     return conversationRepository.save(conversation);
@@ -50,5 +49,17 @@ public class ConversationServiceImpl implements ConversationService {
     return conversationRepository
         .findById(conversationId)
         .orElseThrow(() -> new NotFoundException("Conversation not found!!!"));
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<Conversation> findAllConversationOfCurrentUser() {
+    List<Conversation> conversations = new ArrayList<>();
+    Optional<String> currentUsernameLogin = getCurrentUserLogin();
+    if (currentUsernameLogin.isPresent()) {
+      User currentUser = userService.findByUsername(currentUsernameLogin.get());
+      conversations.addAll(conversationRepository.findAllByMembersContains(currentUser));
+    }
+    return conversations;
   }
 }

@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
     user.setUsername(userRequest.getUsername());
     user.setRole(AuthoritiesConstants.USER);
     user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+    user.setAvatarUrl(userRequest.getAvatarUrl());
     return userRepository.save(user);
   }
 
