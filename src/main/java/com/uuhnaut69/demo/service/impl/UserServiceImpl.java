@@ -1,6 +1,6 @@
 package com.uuhnaut69.demo.service.impl;
 
-import com.uuhnaut69.demo.model.User;
+import com.uuhnaut69.demo.domain.model.User;
 import com.uuhnaut69.demo.repository.UserRepository;
 import com.uuhnaut69.demo.rest.exception.BadRequestException;
 import com.uuhnaut69.demo.rest.payload.request.UserRequest;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * @author uuhnaut

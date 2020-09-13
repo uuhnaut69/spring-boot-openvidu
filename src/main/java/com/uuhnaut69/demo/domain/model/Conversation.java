@@ -1,4 +1,4 @@
-package com.uuhnaut69.demo.model;
+package com.uuhnaut69.demo.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

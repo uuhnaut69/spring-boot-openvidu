@@ -1,6 +1,6 @@
 package com.uuhnaut69.demo.repository;
 
-import com.uuhnaut69.demo.model.User;
+import com.uuhnaut69.demo.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

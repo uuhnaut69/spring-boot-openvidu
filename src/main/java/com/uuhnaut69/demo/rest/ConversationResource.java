@@ -1,6 +1,6 @@
 package com.uuhnaut69.demo.rest;
 
-import com.uuhnaut69.demo.model.Conversation;
+import com.uuhnaut69.demo.domain.model.Conversation;
 import com.uuhnaut69.demo.rest.payload.request.ConversationRequest;
 import com.uuhnaut69.demo.rest.payload.response.GenericResponse;
 import com.uuhnaut69.demo.service.ConversationService;
@@ -34,7 +34,7 @@ public class ConversationResource {
 
   @PostMapping(path = "/{conversationId}")
   public GenericResponse makeACall(@PathVariable UUID conversationId) {
-    String token = openViduService.createSession(conversationId);
+    String token = openViduService.createToken(conversationId);
     return new GenericResponse(token);
   }
 }

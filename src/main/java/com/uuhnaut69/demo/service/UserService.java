@@ -1,6 +1,6 @@
 package com.uuhnaut69.demo.service;
 
-import com.uuhnaut69.demo.model.User;
+import com.uuhnaut69.demo.domain.model.User;
 import com.uuhnaut69.demo.rest.payload.request.UserRequest;
 
 import java.util.Set;

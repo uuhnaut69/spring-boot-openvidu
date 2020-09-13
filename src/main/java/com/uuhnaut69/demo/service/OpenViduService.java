@@ -8,5 +8,5 @@ import java.util.UUID;
  */
 public interface OpenViduService {
 
-  String createSession(UUID conversationId);
+  String createToken(UUID conversationId);
 }
