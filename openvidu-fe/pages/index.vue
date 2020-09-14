@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div v-if="!session">
+  <div class="container">
+    <div v-if="!session" class="mt-4">
       <b-card
         v-for="conversation in conversations"
         :key="conversation.id"
@@ -9,7 +9,7 @@
         img-alt="Image"
         img-top
         tag="article"
-        style="max-width: 20rem"
+        style="max-width: 16rem"
         class="col mr-2"
       >
         <b-avatar-group class="mb-3" size="40px">
@@ -28,19 +28,20 @@
       </b-card>
     </div>
 
-    <div v-if="session">
-      <div>
-        <h1>{{ conversationTitle }}</h1>
-        <b-button variant="danger" @click="leaveSession">Leave call</b-button>
+    <div v-if="session" class="session">
+      <div class="session-header">
+        <h1 class="session-title">{{ conversationTitle }}</h1>
+        <b-button
+          class="button-leave-session"
+          variant="danger"
+          @click="leaveSession"
+          >Leave call</b-button
+        >
       </div>
       <div id="main-video" class="col-md-6">
         <user-video :stream-manager="mainStreamManager" />
       </div>
       <div id="video-container" class="col-md-6">
-        <!-- <user-video
-          :stream-manager="publisher"
-          @click.native="updateMainVideoStreamManager(publisher)"
-        /> -->
         <user-video
           v-for="(sub, index) in subscribers"
           :key="index"
@@ -214,3 +215,18 @@ export default {
   },
 }
 </script>
+
+<style>
+.session-header {
+  margin-bottom: 20px;
+}
+
+.session-title {
+  display: inline-block;
+}
+
+.button-leave-session {
+  float: right;
+  margin-top: 20px;
+}
+</style>
