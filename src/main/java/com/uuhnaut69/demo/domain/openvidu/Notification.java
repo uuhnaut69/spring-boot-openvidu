@@ -17,5 +17,7 @@ public class Notification {
 
   private UUID conversationId;
 
+  private String conversationTitle;
+
   private NotificationType type;
 }

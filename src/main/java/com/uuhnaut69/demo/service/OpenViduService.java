@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface OpenViduService {
 
   String createToken(UUID conversationId);
+
+  void revokeToken(UUID conversationId, String token);
 }

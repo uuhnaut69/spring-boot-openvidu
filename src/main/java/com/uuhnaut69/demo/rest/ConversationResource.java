@@ -7,6 +7,7 @@ import com.uuhnaut69.demo.service.ConversationService;
 import com.uuhnaut69.demo.service.OpenViduService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,9 +33,16 @@ public class ConversationResource {
     return new GenericResponse(conversation);
   }
 
-  @PostMapping(path = "/{conversationId}")
-  public GenericResponse makeACall(@PathVariable UUID conversationId) {
+  @PostMapping(path = "/{conversationId}/generate")
+  public GenericResponse generateToken(@PathVariable UUID conversationId) {
     String token = openViduService.createToken(conversationId);
     return new GenericResponse(token);
+  }
+
+  @PostMapping(path = "/{conversationId}/revoke")
+  public ResponseEntity<Object> revokeToken(
+      @PathVariable UUID conversationId, @RequestBody String token) {
+    openViduService.revokeToken(conversationId, token);
+    return ResponseEntity.noContent().build();
   }
 }
