@@ -16,7 +16,8 @@
     "@stomp/stompjs": "^5.4.4",
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.15.0",
-    "nuxt": "^2.14.0"
+    "nuxt": "^2.14.0",
+    "openvidu-browser": "^2.15.1-alpha2"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^3.1.0",

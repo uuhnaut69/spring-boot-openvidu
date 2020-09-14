@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Nav from '~/components/header/Nav'
+import Nav from '~/components/Nav'
 
 export default {
   components: {
