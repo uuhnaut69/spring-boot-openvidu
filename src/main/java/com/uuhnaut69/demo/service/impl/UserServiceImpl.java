@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
       throw new BadRequestException("Username already exist !!!");
     }
     User user = new User();
-    user.setUsername(userRequest.getUsername());
+    user.setUsername(userRequest.getUsername().toLowerCase());
     user.setRole(AuthoritiesConstants.USER);
     user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
     user.setAvatarUrl(userRequest.getAvatarUrl());

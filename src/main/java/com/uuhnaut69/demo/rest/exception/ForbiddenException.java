@@ -4,8 +4,8 @@ package com.uuhnaut69.demo.rest.exception;
  * @author uuhnaut
  * @project openvidu
  */
-public class BadRequestException extends RuntimeException {
-  public BadRequestException(String message) {
+public class ForbiddenException extends RuntimeException {
+  public ForbiddenException(String message) {
     super(message);
   }
 }

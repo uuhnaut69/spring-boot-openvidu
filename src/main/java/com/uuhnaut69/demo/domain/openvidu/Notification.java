@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 /**
  * @author uuhnaut
  * @project openvidu
@@ -15,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Notification {
 
-  private UUID conversationId;
+  private String conversationId;
 
   private String conversationTitle;
 

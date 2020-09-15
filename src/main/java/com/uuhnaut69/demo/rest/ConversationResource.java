@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.UUID;
 
 /**
  * @author uuhnaut
@@ -34,15 +33,15 @@ public class ConversationResource {
   }
 
   @PostMapping(path = "/{conversationId}/generate")
-  public GenericResponse generateToken(@PathVariable UUID conversationId) {
+  public GenericResponse generateToken(@PathVariable String conversationId) {
     String token = openViduService.createToken(conversationId);
     return new GenericResponse(token);
   }
 
   @PostMapping(path = "/{conversationId}/revoke")
   public ResponseEntity<Object> revokeToken(
-      @PathVariable UUID conversationId, @RequestBody String token) {
-    openViduService.revokeToken(conversationId, token);
+      @PathVariable String conversationId) {
+    openViduService.revokeToken(conversationId);
     return ResponseEntity.noContent().build();
   }
 }

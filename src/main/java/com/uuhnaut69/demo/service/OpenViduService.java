@@ -1,14 +1,12 @@
 package com.uuhnaut69.demo.service;
 
-import java.util.UUID;
-
 /**
  * @author uuhnaut
  * @project openvidu
  */
 public interface OpenViduService {
 
-  String createToken(UUID conversationId);
+  String createToken(String conversationId);
 
-  void revokeToken(UUID conversationId, String token);
+  void revokeToken(String conversationId);
 }
