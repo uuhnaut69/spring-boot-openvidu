@@ -102,14 +102,14 @@ public class OpenViduServiceImpl implements OpenViduService {
     Optional<String> currentUsernameLogin = getCurrentUserLogin();
     if (currentUsernameLogin.isPresent()
         && Objects.nonNull(this.mapSessions.get(conversationId))
-        && Objects.nonNull(this.mapSessionNamesTokens.get(conversationId))) {
-      if (this.mapSessionNamesTokens
-              .get(conversationId)
-              .removeIf(tokenInfo -> tokenInfo.containsKey(currentUsernameLogin.get()))
-          && this.mapSessionNamesTokens.get(conversationId).isEmpty()) {
+        && Objects.nonNull(this.mapSessionNamesTokens.get(conversationId))
+        && this.mapSessionNamesTokens
+            .get(conversationId)
+            .removeIf(tokenInfo -> tokenInfo.containsKey(currentUsernameLogin.get()))
+        && this.mapSessionNamesTokens.get(conversationId).isEmpty()) {
 
-        this.mapSessions.remove(conversationId);
-      }
+      // If session has no connection -> Remove it
+      this.mapSessions.remove(conversationId);
     }
   }
 }

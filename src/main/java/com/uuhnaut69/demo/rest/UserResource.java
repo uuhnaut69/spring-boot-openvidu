@@ -36,6 +36,11 @@ public class UserResource {
 
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
+  @GetMapping(path = "/users")
+  public GenericResponse getUsers() {
+    return new GenericResponse(userService.findAll());
+  }
+
   @PostMapping(path = "/register")
   @ResponseStatus(HttpStatus.CREATED)
   public GenericResponse register(@RequestBody UserRequest userRequest) {

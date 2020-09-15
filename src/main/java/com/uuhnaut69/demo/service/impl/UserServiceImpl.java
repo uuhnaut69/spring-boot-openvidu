@@ -3,6 +3,7 @@ package com.uuhnaut69.demo.service.impl;
 import com.uuhnaut69.demo.domain.model.User;
 import com.uuhnaut69.demo.repository.UserRepository;
 import com.uuhnaut69.demo.rest.exception.BadRequestException;
+import com.uuhnaut69.demo.rest.exception.InternalServerErrorException;
 import com.uuhnaut69.demo.rest.payload.request.UserRequest;
 import com.uuhnaut69.demo.security.AuthoritiesConstants;
 import com.uuhnaut69.demo.service.UserService;
@@ -12,7 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+
+import static com.uuhnaut69.demo.security.SecurityUtils.getCurrentUserLogin;
 
 /**
  * @author uuhnaut
@@ -37,6 +42,17 @@ public class UserServiceImpl implements UserService {
     user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
     user.setAvatarUrl(userRequest.getAvatarUrl());
     return userRepository.save(user);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<User> findAll() {
+    Optional<String> currentUsernameLogin = getCurrentUserLogin();
+    if (currentUsernameLogin.isPresent()) {
+      return userRepository.findAllByUsernameNotContains(currentUsernameLogin.get());
+    } else {
+      throw new InternalServerErrorException("Server error !!!");
+    }
   }
 
   @Override

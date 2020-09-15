@@ -3,6 +3,7 @@ package com.uuhnaut69.demo.service;
 import com.uuhnaut69.demo.domain.model.User;
 import com.uuhnaut69.demo.rest.payload.request.UserRequest;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -12,6 +13,8 @@ import java.util.Set;
 public interface UserService {
 
   User create(UserRequest userRequest);
+
+  List<User> findAll();
 
   User findByUsername(String username);
 
