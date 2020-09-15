@@ -9,19 +9,13 @@
           height="72"
         ></b-img>
         <h1 class="h3 mb-3 font-weight-normal">Sign In</h1>
-        <b-form-group id="username-group">
-          <b-form-input
-            id="username-input"
-            v-model="username"
-            required
-            placeholder="Enter usename"
-          >
+        <b-form-group>
+          <b-form-input v-model="username" required placeholder="Enter usename">
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="password-group">
+        <b-form-group>
           <b-form-input
-            id="password-input"
             v-model="password"
             required
             placeholder="Enter password"
@@ -47,8 +41,8 @@ export default {
   name: 'Login',
   data() {
     return {
-      username: null,
-      password: null,
+      username: undefined,
+      password: undefined,
     }
   },
   methods: {

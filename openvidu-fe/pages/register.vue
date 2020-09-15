@@ -19,6 +19,14 @@
           </b-form-input>
         </b-form-group>
 
+        <b-form-group>
+          <b-form-input
+            v-model="avatarUrl"
+            required
+            placeholder="User avatar url"
+          ></b-form-input>
+        </b-form-group>
+
         <b-form-group id="password-group">
           <b-form-input
             id="password-input"
@@ -33,7 +41,7 @@
           id="register"
           variant="primary"
           class="btn-lg btn-block"
-          @click="register(username, password)"
+          @click="register(username, password, avatarUrl)"
           >Register</b-button
         >
       </b-form>
@@ -47,16 +55,18 @@ export default {
   auth: false,
   data() {
     return {
-      username: null,
-      password: null,
+      username: undefined,
+      password: undefined,
+      avatarUrl: undefined,
     }
   },
   methods: {
-    async register(username, password) {
+    async register(username, password, avatarUrl) {
       try {
         await this.$axios.$post('/register', {
           username,
           password,
+          avatarUrl,
         })
         this.$router.push('/login')
       } catch (error) {

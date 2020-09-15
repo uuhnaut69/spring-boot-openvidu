@@ -1,48 +1,77 @@
 <template>
   <div class="container">
-    <div v-if="!session" class="mt-4">
-      <b-card
-        v-for="conversation in conversations"
-        :key="conversation.id"
-        :title="conversation.title"
-        :img-src="conversation.imageUrl"
-        img-alt="Image"
-        img-top
-        tag="article"
-        style="max-width: 16rem"
-        class="col mr-2"
-      >
-        <b-avatar-group class="mb-3" size="40px">
-          <b-avatar
-            v-for="member in conversation.members"
-            :key="member.id"
-            :src="member.avatarUrl"
-            variant="info"
-          ></b-avatar>
-        </b-avatar-group>
+    <div v-if="!session" class="row mt-4">
+      <div class="col-3">
+        <h5>List active users</h5>
         <b-button
-          variant="primary"
-          @click="getToken(conversation.id, conversation.title)"
-          >Make a call</b-button
+          variant="success"
+          size="sm"
+          @click="addConversationModalShow = true"
         >
-      </b-card>
+          Add new conversation
+        </b-button>
+        <b-list-group class="mt-3" style="max-width: 300px">
+          <b-list-group-item
+            v-for="user in users"
+            :key="user.id"
+            class="d-flex align-items-center"
+          >
+            <b-avatar
+              variant="info"
+              :src="user.avatarUrl"
+              class="mr-3"
+            ></b-avatar>
+            <span class="mr-auto"> {{ user.username }}</span>
+          </b-list-group-item>
+        </b-list-group>
+      </div>
+
+      <div class="col-9">
+        <h5>Your conversation list</h5>
+        <div class="row">
+          <b-card
+            v-for="conversation in conversations"
+            :key="conversation.id"
+            :title="conversation.title"
+            :img-src="conversation.imageUrl"
+            img-alt="Image"
+            img-top
+            tag="article"
+            class="col-3 mr-3 mt-3 text-truncate"
+          >
+            <b-avatar-group class="mb-3">
+              <b-avatar
+                v-for="member in conversation.members"
+                :key="member.id"
+                :src="member.avatarUrl"
+                variant="info"
+              ></b-avatar>
+            </b-avatar-group>
+            <b-button
+              variant="primary"
+              @click="getToken(conversation.id, conversation.title)"
+              >Make a call</b-button
+            >
+          </b-card>
+        </div>
+      </div>
     </div>
 
-    <div v-if="session" class="session">
-      <div class="session-header">
-        <h1 class="session-title">{{ conversationTitle }}</h1>
-        <b-button
-          class="button-leave-session"
-          variant="danger"
-          @click="revokeToken"
-          >Leave call</b-button
-        >
+    <div v-if="session">
+      <div class="session-header row mt-4 w-100">
+        <h3>{{ conversationTitle }}</h3>
+        <div>
+          <b-button class="mr-2" variant="success" @click="revokeToken"
+            >Add user</b-button
+          >
+          <b-button variant="danger" @click="revokeToken">Leave call</b-button>
+        </div>
       </div>
       <div class="row">
-        <div id="main-video" class="col-md-6">
+        <div id="main-video" class="col-6">
           <user-video :stream-manager="mainStreamManager" />
         </div>
-        <div id="video-container" class="col-md-6">
+        <div id="video-container" class="col-6">
           <user-video
             v-for="(sub, index) in subscribers"
             :key="index"
@@ -53,20 +82,61 @@
       </div>
     </div>
 
+    <!-- Incoming Call Popup -->
     <b-modal
-      v-model="modalShow"
+      v-model="inCommingCallModalShow"
       title="Incomming Call"
       ok-title="Join"
       cancel-title="Decline"
       cancel-variant="danger"
       @ok="getToken(inCommingConversationId, conversationTitle)"
-      @cancel="modalShow = false"
+      @cancel="inCommingCallModalShow = false"
     >
       <p class="my-4">
         Hi {{ user.username }}! You have a incomming call from
         {{ conversationTitle }}
       </p>
     </b-modal>
+    <!-- End Incoming Call Popup -->
+
+    <!-- Modal add new conversation -->
+    <b-modal
+      v-model="addConversationModalShow"
+      title="Create new conversation"
+      ok-title="Create"
+      cancel-title="Cancel"
+      cancel-variant="danger"
+      @ok="createConversation(conversationReq)"
+      @cancel="addConversationModalShow = false"
+    >
+      <b-form>
+        <b-form-group>
+          <b-form-input
+            v-model="conversationReq.title"
+            required
+            placeholder="Enter title"
+          >
+          </b-form-input>
+        </b-form-group>
+        <b-form-group>
+          <b-form-input
+            v-model="conversationReq.imageUrl"
+            required
+            placeholder="Enter image url"
+          >
+          </b-form-input>
+        </b-form-group>
+
+        <b-form-group>
+          <b-form-tags
+            v-model="conversationReq.usernameList"
+            placeholder="Add username"
+          ></b-form-tags>
+        </b-form-group>
+      </b-form>
+    </b-modal>
+
+    <!-- End Modal add new conversation -->
   </div>
 </template>
 
@@ -82,16 +152,19 @@ export default {
   },
   async asyncData({ $axios }) {
     try {
-      const response = await $axios.$get('/my-conversations')
-      return { conversations: response.data }
+      const conversationResp = await $axios.$get('/my-conversations')
+      const userResp = await $axios.$get('/users')
+      return { conversations: conversationResp.data, users: userResp.data }
     } catch (error) {
       console.log(error)
     }
   },
   data() {
     return {
-      modalShow: false,
+      inCommingCallModalShow: false,
+      addConversationModalShow: false,
       conversations: [],
+      users: [],
       OV: undefined,
       session: undefined,
       mainStreamManager: undefined,
@@ -101,6 +174,11 @@ export default {
       inCommingConversationId: undefined,
       conversationTitle: undefined,
       token: undefined,
+      conversationReq: {
+        title: undefined,
+        imageUrl: undefined,
+        usernameList: [],
+      },
     }
   },
   computed: {
@@ -122,7 +200,7 @@ export default {
         const data = JSON.parse(message.body)
         this.inCommingConversationId = data.conversationId
         this.conversationTitle = data.conversationTitle
-        this.modalShow = true
+        this.inCommingCallModalShow = true
       })
     }
     client.onStompError = (frame) => {}
@@ -130,8 +208,19 @@ export default {
   },
 
   methods: {
+    async createConversation(conversationReq) {
+      const response = await this.$axios.$post('/conversations', {
+        title: conversationReq.title,
+        members: conversationReq.usernameList,
+        imageUrl: conversationReq.imageUrl,
+      })
+      this.conversations.unshift(response.data)
+      this.conversationReq.title = undefined
+      this.conversationReq.users = []
+      this.conversationReq.imageUrl = undefined
+    },
     async getToken(conversationId, conversationTitle) {
-      this.modalShow = false
+      this.inCommingCallModalShow = false
       this.conversationTitle = conversationTitle
       this.conversationId = conversationId
       try {
@@ -228,15 +317,7 @@ export default {
 
 <style>
 .session-header {
-  margin-bottom: 20px;
-}
-
-.session-title {
-  display: inline-block;
-}
-
-.button-leave-session {
-  float: right;
-  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
 }
 </style>
