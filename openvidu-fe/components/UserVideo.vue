@@ -15,11 +15,14 @@ export default {
     OvVideo,
   },
   props: {
+    // eslint-disable-next-line vue/require-default-prop
     streamManager: Object,
   },
   computed: {
     clientData() {
-      return JSON.parse(this.streamManager.stream.connection.data).clientData
+      return JSON.parse(
+        this.streamManager.stream.connection.data.split('%/%')[0]
+      ).clientData
     },
   },
 }

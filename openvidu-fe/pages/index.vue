@@ -34,20 +34,22 @@
         <b-button
           class="button-leave-session"
           variant="danger"
-          @click="leaveSession"
+          @click="revokeToken"
           >Leave call</b-button
         >
       </div>
-      <div id="main-video" class="col-md-6">
-        <user-video :stream-manager="mainStreamManager" />
-      </div>
-      <div id="video-container" class="col-md-6">
-        <user-video
-          v-for="(sub, index) in subscribers"
-          :key="index"
-          :stream-manager="sub"
-          @click.native="updateMainVideoStreamManager(sub)"
-        />
+      <div class="row">
+        <div id="main-video" class="col-md-6">
+          <user-video :stream-manager="mainStreamManager" />
+        </div>
+        <div id="video-container" class="col-md-6">
+          <user-video
+            v-for="(sub, index) in subscribers"
+            :key="index"
+            :stream-manager="sub"
+            @click.native="updateMainVideoStreamManager(sub)"
+          />
+        </div>
       </div>
     </div>
 
@@ -88,6 +90,7 @@ export default {
   },
   data() {
     return {
+      modalShow: false,
       conversations: [],
       OV: undefined,
       session: undefined,
@@ -96,8 +99,8 @@ export default {
       subscribers: [],
       sessionId: undefined,
       inCommingConversationId: undefined,
-      modalShow: false,
       conversationTitle: undefined,
+      token: undefined,
     }
   },
   computed: {
@@ -130,6 +133,7 @@ export default {
     async getToken(conversationId, conversationTitle) {
       this.modalShow = false
       this.conversationTitle = conversationTitle
+      this.conversationId = conversationId
       try {
         const response = await this.$axios.$post(
           '/conversations/' + conversationId + '/generate'
@@ -197,7 +201,6 @@ export default {
       }
     },
     leaveSession() {
-      // --- Leave the session by calling 'disconnect' method over the Session object ---
       if (this.session) this.session.disconnect()
 
       this.session = undefined
@@ -205,12 +208,19 @@ export default {
       this.publisher = undefined
       this.subscribers = []
       this.OV = undefined
+      this.sessionId = undefined
+      this.conversationId = undefined
+      this.conversationTitle = undefined
 
       window.removeEventListener('beforeunload', this.leaveSession)
     },
     updateMainVideoStreamManager(stream) {
       if (this.mainStreamManager === stream) return
       this.mainStreamManager = stream
+    },
+    revokeToken() {
+      this.$axios.$post('/conversations/' + this.conversationId + '/revoke/')
+      this.leaveSession()
     },
   },
 }
