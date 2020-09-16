@@ -56,13 +56,14 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/auth',
+    '@nuxtjs/dotenv',
   ],
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: 'http://localhost:8080',
+    baseURL: process.env.API_URL || 'http://127.0.0.1:8080',
   },
   auth: {
     strategies: {
@@ -92,4 +93,9 @@ export default {
    ** See https://nuxtjs.org/api/configuration-build/
    */
   build: {},
+  env: {
+    wsUrl: process.env.WS_URL,
+    wsUsername: process.env.WS_USERNAME,
+    wsPassword: process.env.WS_PASSWORD,
+  },
 }

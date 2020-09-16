@@ -186,10 +186,13 @@ export default {
   },
   created() {
     const client = new Client({
-      brokerURL: 'ws://localhost:15674/ws',
+      brokerURL: process.env.wsUrl,
       connectHeaders: {
-        login: 'guest',
-        passcode: 'guest',
+        login: process.env.wsUsername,
+        passcode: process.env.wsPassword,
+      },
+      debug(str) {
+        console.log(str)
       },
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
