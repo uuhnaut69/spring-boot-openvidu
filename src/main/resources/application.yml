@@ -4,9 +4,9 @@ spring:
   banner:
     location: classpath:banner.txt
   datasource:
-    url: jdbc:postgresql://127.0.0.1:5432/postgres
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATA_SOURCE_URL}
+    username: ${SPRING_DATA_SOURCE_USERNAME}
+    password: ${SPRING_DATA_SOURCE_PASSWORD}
     hikari:
       auto-commit: false
   jpa:
@@ -19,5 +19,11 @@ jwt:
   token-validity-in-seconds: 86400000
 
 openvidu:
-  hostname: https://localhost:4443/
-  secret: MY_SECRET
+  hostname: ${OPENVIDU_HOSTNAME}
+  secret: ${OPENVIDU_SECRET}
+
+rabbitmq:
+  host: ${RABBIT_HOST}
+  port: ${RABBIT_PORT}
+  username: ${RABBIT_USERNAME}
+  password: ${RABBIT_PASSWORD}

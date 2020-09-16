@@ -39,8 +39,7 @@ public class ConversationResource {
   }
 
   @PostMapping(path = "/{conversationId}/revoke")
-  public ResponseEntity<Object> revokeToken(
-      @PathVariable String conversationId) {
+  public ResponseEntity<Object> revokeToken(@PathVariable String conversationId) {
     openViduService.revokeToken(conversationId);
     return ResponseEntity.noContent().build();
   }

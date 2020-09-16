@@ -1,0 +1,68 @@
+version: "3.7"
+
+services:
+  postgres-db:
+    container_name: postgres-db
+    image: debezium/postgres:12
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    restart: on-failure
+
+  openvidu-server:
+    container_name: openvidu-server
+    image: openvidu/openvidu-server-kms
+    environment:
+      - OPENVIDU_SECRET=MY_SECRET
+    ports:
+      - 4443:4443
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: uuhnaut69/rabbitmq
+    ports:
+      - 5672:5672
+      - 25672:25672
+      - 15672:15672
+      - 15674:15674
+      - 61613:61613
+    restart: on-failure
+
+  back-end:
+    container_name: back-end
+    image: uuhnaut69/openvidu-springboot-example
+    depends_on:
+      - postgres-db
+      - openvidu-server
+      - rabbitmq
+    environment:
+      - SPRING_DATA_SOURCE_URL=jdbc:postgresql://postgres-db:5432/postgres
+      - SPRING_DATA_SOURCE_USERNAME=postgres
+      - SPRING_DATA_SOURCE_PASSWORD=postgres
+      - OPENVIDU_HOSTNAME=https://openvidu-server:4443
+      - OPENVIDU_SECRET=MY_SECRET
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=61613
+      - RABBIT_USERNAME=guest
+      - RABBIT_PASSWORD=guest
+    ports:
+      - 8080:8080
+    restart: on-failure
+
+  front-end:
+    container_name: front-end
+    image: uuhnaut69/openvidu-nuxtjs-example
+    depends_on:
+      - back-end
+      - rabbitmq
+    environment:
+      - API_URL=back-end:8080
+      - WS_URL=ws://rabbitmq:15674/ws
+      - WS_USERNAME=guest
+      - WS_PASSWORD=guest
+    ports:
+      - 3000:3000
+    restart: on-failure

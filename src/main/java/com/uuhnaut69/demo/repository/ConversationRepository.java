@@ -17,7 +17,7 @@ import java.util.UUID;
 @Repository
 public interface ConversationRepository extends JpaRepository<Conversation, UUID> {
 
-  @EntityGraph(attributePaths = {"members"})
+  @EntityGraph(attributePaths = {"members", "owner"})
   Optional<Conversation> findById(UUID conversationId);
 
   @EntityGraph(attributePaths = {"members"})
