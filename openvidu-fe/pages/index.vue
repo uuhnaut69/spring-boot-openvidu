@@ -179,13 +179,14 @@ export default {
         imageUrl: undefined,
         usernameList: [],
       },
+      wsClient: undefined,
     }
   },
   computed: {
     ...mapState('auth', ['loggedIn', 'user']),
   },
   created() {
-    const client = new Client({
+    this.wsClient = new Client({
       brokerURL: process.env.wsUrl,
       connectHeaders: {
         login: process.env.wsUsername,
@@ -198,16 +199,22 @@ export default {
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
     })
-    client.onConnect = (frame) => {
-      client.subscribe('/topic/' + this.user.username, (message) => {
+    this.wsClient.onConnect = (frame) => {
+      this.wsClient.subscribe('/topic/' + this.user.username, (message) => {
         const data = JSON.parse(message.body)
         this.inCommingConversationId = data.conversationId
         this.conversationTitle = data.conversationTitle
         this.inCommingCallModalShow = true
       })
     }
-    client.onStompError = (frame) => {}
-    client.activate()
+    this.wsClient.onStompError = (frame) => {}
+    this.wsClient.activate()
+  },
+
+  beforeDestroy() {
+    if (this.wsClient !== undefined) {
+      this.wsClient.deactivate()
+    }
   },
 
   methods: {
