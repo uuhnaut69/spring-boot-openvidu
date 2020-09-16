@@ -192,9 +192,6 @@ export default {
         login: process.env.wsUsername,
         passcode: process.env.wsPassword,
       },
-      debug(str) {
-        console.log(str)
-      },
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,

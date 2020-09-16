@@ -60,9 +60,24 @@ services:
       - rabbitmq
     environment:
       - API_URL=back-end:8080
-      - WS_URL=ws://rabbitmq:15674/ws
+      - WS_URL=ws://localhost/ws
       - WS_USERNAME=guest
       - WS_PASSWORD=guest
     ports:
       - 3000:3000
     restart: on-failure
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - 80:80
+    environment:
+      - NGINX_HOST=localhost
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - openvidu-server
+      - rabbitmq
+      - back-end
+      - front-end

@@ -11,6 +11,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     restart: on-failure
+    networks:
+      enviroment:
 
   openvidu-service:
     container_name: openvidu-service
@@ -29,3 +31,8 @@ services:
       - 15672:15672
       - 15674:15674
       - 61613:61613
+    networks:
+      enviroment:
+
+networks:
+  enviroment:
