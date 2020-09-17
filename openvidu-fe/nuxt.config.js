@@ -1,3 +1,4 @@
+require('dotenv').config()
 export default {
   /*
    ** Nuxt rendering mode
@@ -63,7 +64,7 @@ export default {
    ** See https://axios.nuxtjs.org/options
    */
   axios: {
-    baseURL: process.env.API_URL || 'http://127.0.0.1:8080',
+    baseURL: process.env.API_URL,
   },
   auth: {
     strategies: {
