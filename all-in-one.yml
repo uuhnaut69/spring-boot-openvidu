@@ -59,7 +59,7 @@ services:
       - back-end
       - rabbitmq
     environment:
-      - API_URL=back-end:8080
+      - API_URL=localhost/api
       - WS_URL=ws://localhost/ws
       - WS_USERNAME=guest
       - WS_PASSWORD=guest
