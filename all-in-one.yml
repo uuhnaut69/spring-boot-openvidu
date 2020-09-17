@@ -16,6 +16,7 @@ services:
     container_name: openvidu-server
     image: openvidu/openvidu-server-kms
     environment:
+      - OPENVIDU_DOMAIN_OR_PUBLIC_IP=localhost
       - OPENVIDU_SECRET=MY_SECRET
     ports:
       - 4443:4443
@@ -42,7 +43,7 @@ services:
       - SPRING_DATA_SOURCE_URL=jdbc:postgresql://postgres-db:5432/postgres
       - SPRING_DATA_SOURCE_USERNAME=postgres
       - SPRING_DATA_SOURCE_PASSWORD=postgres
-      - OPENVIDU_HOSTNAME=https://openvidu-server:4443
+      - OPENVIDU_HOSTNAME=https://localhost:4443
       - OPENVIDU_SECRET=MY_SECRET
       - RABBIT_HOST=rabbitmq
       - RABBIT_PORT=61613
@@ -59,8 +60,8 @@ services:
       - back-end
       - rabbitmq
     environment:
-      - API_URL=localhost/api
-      - WS_URL=ws://localhost/ws
+      - API_URL=localhost:8080
+      - WS_URL=ws://localhost:8080/ws
       - WS_USERNAME=guest
       - WS_PASSWORD=guest
     ports:
@@ -72,6 +73,8 @@ services:
     container_name: nginx
     ports:
       - 80:80
+      - 3000:3000
+      - 4443:4443
     environment:
       - NGINX_HOST=localhost
     volumes:
