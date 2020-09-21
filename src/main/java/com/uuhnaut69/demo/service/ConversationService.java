@@ -17,6 +17,4 @@ public interface ConversationService {
   Conversation findById(UUID conversationId);
 
   List<Conversation> findAllConversationOfCurrentUser();
-
-  void delete(UUID conversationId);
 }

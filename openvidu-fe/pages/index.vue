@@ -51,12 +51,6 @@
                 @click="getToken(conversation.id, conversation.title)"
                 >Make a call</b-button
               >
-              <b-button
-                v-if="conversation.owner.id === user.id"
-                variant="danger"
-                size="sm"
-                >Delete</b-button
-              >
             </div>
           </b-card>
         </div>
@@ -83,6 +77,14 @@
               ><b-icon
                 :icon="isEnabledMic ? 'mic' : 'mic-mute'"
                 :variant="isEnabledMic ? '' : 'danger'"
+            /></b-button>
+            <b-button
+              :class="isEnabledScreenShare ? '' : 'active'"
+              variant="warning"
+              @click="toggleScreenShare"
+              ><b-icon
+                :icon="isEnabledScreenShare ? 'display' : 'display-fill'"
+                :variant="isEnabledScreenShare ? '' : 'danger'"
             /></b-button>
             <b-button variant="warning" @click="revokeToken"
               ><b-icon icon="power" variant="danger"
@@ -196,6 +198,7 @@ export default {
       wsClient: undefined,
       isEnabledCamera: true,
       isEnabledMic: true,
+      isEnabledScreenShare: false,
     }
   },
   computed: {
@@ -244,6 +247,7 @@ export default {
     if (this.wsClient !== undefined) {
       this.wsClient.deactivate()
     }
+    this.revokeToken()
   },
 
   methods: {
@@ -300,8 +304,8 @@ export default {
               const publisher = this.OV.initPublisher(undefined, {
                 audioSource: undefined, // The source of audio. If undefined default microphone
                 videoSource: undefined, // The source of video. If undefined default webcam
-                publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-                publishVideo: true, // Whether you want to start publishing with your video enabled or not
+                publishAudio: this.isEnabledMic, // Whether you want to start publishing with your audio unmuted or not
+                publishVideo: this.isEnabledCamera, // Whether you want to start publishing with your video enabled or not
                 resolution: '640x480', // The resolution of your video
                 frameRate: 30, // The frame rate of your video
                 insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
@@ -355,6 +359,9 @@ export default {
     toggleMic() {
       this.isEnabledMic = !this.isEnabledMic
       this.publisher.publishAudio(this.isEnabledMic)
+    },
+    toggleScreenShare() {
+      this.isEnabledScreenShare = !this.isEnabledScreenShare
     },
   },
 }

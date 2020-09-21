@@ -43,11 +43,6 @@ export default {
       password: undefined,
     }
   },
-  // computed: {
-  //   background() {
-  //     return require('~/assets/background.jpg')
-  //   },
-  // },
   methods: {
     async authenticate(username, password) {
       try {
@@ -71,12 +66,5 @@ export default {
   max-width: 330px;
   padding: 15px;
   margin: 0 auto;
-}
-
-.background {
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  height: 100vh;
 }
 </style>

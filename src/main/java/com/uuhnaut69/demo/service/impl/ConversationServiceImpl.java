@@ -62,7 +62,4 @@ public class ConversationServiceImpl implements ConversationService {
     }
     return conversations;
   }
-
-  @Override
-  public void delete(UUID conversationId) {}
 }
