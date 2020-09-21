@@ -1,6 +1,6 @@
 package com.uuhnaut69.demo.security;
 
-import com.uuhnaut69.demo.domain.model.User;
+import com.uuhnaut69.demo.model.User;
 import com.uuhnaut69.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

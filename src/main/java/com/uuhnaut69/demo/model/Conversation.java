@@ -1,4 +1,4 @@
-package com.uuhnaut69.demo.domain.model;
+package com.uuhnaut69.demo.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,6 +36,4 @@ public class Conversation {
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "conversation_id"))
   private Set<User> members = new HashSet<>();
-
-  private String imageUrl;
 }

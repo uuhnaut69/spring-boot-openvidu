@@ -1,4 +1,4 @@
-package com.uuhnaut69.demo.domain.openvidu;
+package com.uuhnaut69.demo.rest.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,11 +11,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Notification {
+public class ConversationEvent {
 
-  private String conversationId;
+  private ConversationResponse data;
 
-  private String conversationTitle;
-
-  private NotificationType type;
+  private OperationType type;
 }

@@ -1,4 +1,4 @@
-package com.uuhnaut69.demo.domain.model;
+package com.uuhnaut69.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package com.uuhnaut69.demo.service;
 
-import com.uuhnaut69.demo.domain.model.Conversation;
+import com.uuhnaut69.demo.model.Conversation;
 import com.uuhnaut69.demo.rest.payload.request.ConversationRequest;
 
 import java.util.List;
@@ -17,4 +17,6 @@ public interface ConversationService {
   Conversation findById(UUID conversationId);
 
   List<Conversation> findAllConversationOfCurrentUser();
+
+  void delete(UUID conversationId);
 }

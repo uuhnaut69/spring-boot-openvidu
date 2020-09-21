@@ -1,6 +1,9 @@
 package com.uuhnaut69.demo.rest;
 
-import com.uuhnaut69.demo.domain.model.User;
+import com.uuhnaut69.demo.mappers.ConversationMapper;
+import com.uuhnaut69.demo.mappers.UserMapper;
+import com.uuhnaut69.demo.model.Conversation;
+import com.uuhnaut69.demo.model.User;
 import com.uuhnaut69.demo.rest.payload.request.UserRequest;
 import com.uuhnaut69.demo.rest.payload.response.GenericResponse;
 import com.uuhnaut69.demo.security.JwtFilter;
@@ -16,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.uuhnaut69.demo.security.SecurityUtils.getCurrentUserLogin;
@@ -30,7 +34,11 @@ public class UserResource {
 
   private final UserService userService;
 
+  private final UserMapper userMapper;
+
   private final TokenProvider tokenProvider;
+
+  private final ConversationMapper conversationMapper;
 
   private final ConversationService conversationService;
 
@@ -38,13 +46,15 @@ public class UserResource {
 
   @GetMapping(path = "/users")
   public GenericResponse getUsers() {
-    return new GenericResponse(userService.findAll());
+    List<User> users = userService.findAll();
+    return new GenericResponse(userMapper.toUserResponses(users));
   }
 
   @PostMapping(path = "/register")
   @ResponseStatus(HttpStatus.CREATED)
   public GenericResponse register(@RequestBody UserRequest userRequest) {
-    return new GenericResponse(userService.create(userRequest));
+    User user = userService.create(userRequest);
+    return new GenericResponse(userMapper.toUserResponse(user));
   }
 
   @PostMapping("/authenticate")
@@ -67,13 +77,14 @@ public class UserResource {
     Optional<String> currentUsernameLogin = getCurrentUserLogin();
     if (currentUsernameLogin.isPresent()) {
       User currentUser = userService.findByUsername(currentUsernameLogin.get());
-      return new GenericResponse(currentUser);
+      return new GenericResponse(userMapper.toUserResponse(currentUser));
     }
     return new GenericResponse();
   }
 
   @GetMapping("/my-conversations")
   public GenericResponse getMyConversations() {
-    return new GenericResponse(conversationService.findAllConversationOfCurrentUser());
+    List<Conversation> conversations = conversationService.findAllConversationOfCurrentUser();
+    return new GenericResponse(conversationMapper.toConversationResponses(conversations));
   }
 }

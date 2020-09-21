@@ -1,7 +1,7 @@
 package com.uuhnaut69.demo.service.impl;
 
-import com.uuhnaut69.demo.domain.model.Conversation;
-import com.uuhnaut69.demo.domain.model.User;
+import com.uuhnaut69.demo.model.Conversation;
+import com.uuhnaut69.demo.model.User;
 import com.uuhnaut69.demo.repository.ConversationRepository;
 import com.uuhnaut69.demo.rest.exception.NotFoundException;
 import com.uuhnaut69.demo.rest.payload.request.ConversationRequest;
@@ -40,7 +40,6 @@ public class ConversationServiceImpl implements ConversationService {
       conversation.getMembers().add(currentUser);
     }
     conversation.setTitle(conversationRequest.getTitle());
-    conversation.setImageUrl(conversationRequest.getImageUrl());
     return conversationRepository.save(conversation);
   }
 
@@ -63,4 +62,7 @@ public class ConversationServiceImpl implements ConversationService {
     }
     return conversations;
   }
+
+  @Override
+  public void delete(UUID conversationId) {}
 }

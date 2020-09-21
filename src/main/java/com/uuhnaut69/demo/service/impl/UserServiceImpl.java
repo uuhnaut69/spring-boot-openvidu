@@ -1,6 +1,6 @@
 package com.uuhnaut69.demo.service.impl;
 
-import com.uuhnaut69.demo.domain.model.User;
+import com.uuhnaut69.demo.model.User;
 import com.uuhnaut69.demo.repository.UserRepository;
 import com.uuhnaut69.demo.rest.exception.BadRequestException;
 import com.uuhnaut69.demo.rest.exception.InternalServerErrorException;

@@ -3,9 +3,8 @@ package com.uuhnaut69.demo.service.impl;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import com.uuhnaut69.demo.domain.model.Conversation;
-import com.uuhnaut69.demo.domain.openvidu.Notification;
-import com.uuhnaut69.demo.domain.openvidu.NotificationType;
+import com.uuhnaut69.demo.model.Conversation;
+import com.uuhnaut69.demo.rest.payload.response.CallEvent;
 import com.uuhnaut69.demo.rest.exception.InternalServerErrorException;
 import com.uuhnaut69.demo.service.ConversationService;
 import com.uuhnaut69.demo.service.OpenViduService;
@@ -84,11 +83,8 @@ public class OpenViduServiceImpl implements OpenViduService {
               .forEach(
                   user ->
                       this.messagingTemplate.convertAndSend(
-                          "/topic/" + user.getUsername(),
-                          new Notification(
-                              conversationId,
-                              conversation.getTitle(),
-                              NotificationType.INCOMING_VIDEO_CALL)));
+                          "/topic/" + user.getUsername() + ".call-event",
+                          new CallEvent(conversationId, conversation.getTitle())));
         }
       } catch (OpenViduJavaClientException | OpenViduHttpException e) {
         log.error(e.getMessage());

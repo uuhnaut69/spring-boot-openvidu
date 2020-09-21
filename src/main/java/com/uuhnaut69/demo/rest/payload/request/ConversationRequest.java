@@ -16,6 +16,4 @@ public class ConversationRequest {
   @NotBlank private String title;
 
   @NotNull private Set<String> members;
-
-  @NotBlank private String imageUrl;
 }
