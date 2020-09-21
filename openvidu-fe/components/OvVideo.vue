@@ -6,7 +6,10 @@
 export default {
   name: 'OvVideo',
   props: {
-    streamManager: Object,
+    streamManager: {
+      type: Object,
+      required: true,
+    },
   },
   mounted() {
     this.streamManager.addVideoElement(this.$el)

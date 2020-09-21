@@ -1,5 +1,5 @@
 <template>
-  <b-navbar toggleable="lg" type="dark" variant="info">
+  <b-navbar v-if="loggedIn" toggleable="lg" type="dark">
     <b-navbar-brand href="#">Video Conference Demo</b-navbar-brand>
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -10,7 +10,7 @@
         <b-nav-item-dropdown right>
           <!-- Using 'button-content' slot -->
           <template v-slot:button-content>
-            <b-avatar :src="user.avatarUrl" variant="info"></b-avatar>
+            <b-avatar :src="user.avatarUrl"></b-avatar>
           </template>
           <b-dropdown-item @click="logout()">Sign Out</b-dropdown-item>
         </b-nav-item-dropdown>

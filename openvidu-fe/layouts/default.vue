@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="background" :style="{ backgroundImage: `url('${background}')` }">
     <Nav />
     <Nuxt />
   </div>
@@ -12,5 +12,19 @@ export default {
   components: {
     Nav,
   },
+  computed: {
+    background() {
+      return require('~/assets/background.jpg')
+    },
+  },
 }
 </script>
+
+<style>
+.background {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+}
+</style>

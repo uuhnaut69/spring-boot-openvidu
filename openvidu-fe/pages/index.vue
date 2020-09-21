@@ -2,7 +2,7 @@
   <div class="container">
     <div v-if="!session" class="row mt-4">
       <div class="col-3">
-        <h5>List active users</h5>
+        <h5 class="text-white">List active users</h5>
         <b-button
           variant="success"
           size="sm"
@@ -27,7 +27,7 @@
       </div>
 
       <div class="col-9">
-        <h5>Your conversation list</h5>
+        <h5 class="text-white">Your conversation list</h5>
         <div class="row">
           <b-card
             v-for="conversation in conversations"
@@ -55,7 +55,6 @@
                 v-if="conversation.owner.id === user.id"
                 variant="danger"
                 size="sm"
-                @click="getToken(conversation.id, conversation.title)"
                 >Delete</b-button
               >
             </div>
@@ -65,16 +64,34 @@
     </div>
 
     <div v-if="session">
-      <div class="session-header row mt-4 w-100">
-        <h3>{{ conversationTitle }}</h3>
-        <div>
-          <b-button class="mr-2" variant="success" @click="revokeToken"
-            >Add user</b-button
-          >
-          <b-button variant="danger" @click="revokeToken">Leave call</b-button>
-        </div>
+      <div class="row mt-4" style="justify-content: space-between">
+        <h3 class="text-white">{{ conversationTitle }}</h3>
+        <b-button-toolbar>
+          <b-button-group class="mx-1">
+            <b-button
+              :class="isEnabledCamera ? '' : 'active'"
+              variant="warning"
+              @click="toggleCamera"
+              ><b-icon
+                :icon="isEnabledCamera ? 'camera-video' : 'camera-video-off'"
+                :variant="isEnabledCamera ? '' : 'danger'"
+            /></b-button>
+            <b-button
+              :class="isEnabledMic ? '' : 'active'"
+              variant="warning"
+              @click="toggleMic"
+              ><b-icon
+                :icon="isEnabledMic ? 'mic' : 'mic-mute'"
+                :variant="isEnabledMic ? '' : 'danger'"
+            /></b-button>
+            <b-button variant="warning" @click="revokeToken"
+              ><b-icon icon="power" variant="danger"
+            /></b-button>
+          </b-button-group>
+        </b-button-toolbar>
       </div>
-      <div class="row">
+      <hr />
+      <div class="row mt-4">
         <div id="main-video" class="col-6">
           <user-video :stream-manager="mainStreamManager" />
         </div>
@@ -134,7 +151,6 @@
         </b-form-group>
       </b-form>
     </b-modal>
-
     <!-- End Modal add new conversation -->
   </div>
 </template>
@@ -178,6 +194,8 @@ export default {
         usernameList: [],
       },
       wsClient: undefined,
+      isEnabledCamera: true,
+      isEnabledMic: true,
     }
   },
   computed: {
@@ -257,7 +275,6 @@ export default {
       if (process.client) {
         import('openvidu-browser').then((OpenViduModule) => {
           this.OV = new OpenViduModule.OpenVidu()
-          this.session = this.OV.initSession()
           // --- Init a session ---
           this.session = this.OV.initSession()
           // --- Specify the actions when events take place in the session ---
@@ -331,13 +348,14 @@ export default {
       this.$axios.$post('/conversations/' + this.conversationId + '/revoke/')
       this.leaveSession()
     },
+    toggleCamera() {
+      this.isEnabledCamera = !this.isEnabledCamera
+      this.publisher.publishVideo(this.isEnabledCamera)
+    },
+    toggleMic() {
+      this.isEnabledMic = !this.isEnabledMic
+      this.publisher.publishAudio(this.isEnabledMic)
+    },
   },
 }
 </script>
-
-<style>
-.session-header {
-  display: flex;
-  justify-content: space-between;
-}
-</style>
