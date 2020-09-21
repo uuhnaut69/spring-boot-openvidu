@@ -4,7 +4,7 @@
       <b-form class="form-register">
         <b-img
           class="mb-4 mt-4"
-          src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg"
+          src="~/assets/openvidu_logo.png"
           width="72"
           height="72"
         ></b-img>

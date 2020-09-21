@@ -33,9 +33,6 @@
             v-for="conversation in conversations"
             :key="conversation.id"
             :title="conversation.title"
-            :img-src="conversation.imageUrl"
-            img-alt="Image"
-            img-top
             tag="article"
             class="col-3 mr-3 mt-3 text-truncate"
           >
@@ -47,11 +44,21 @@
                 variant="info"
               ></b-avatar>
             </b-avatar-group>
-            <b-button
-              variant="primary"
-              @click="getToken(conversation.id, conversation.title)"
-              >Make a call</b-button
-            >
+            <div class="w-100">
+              <b-button
+                variant="primary"
+                size="sm"
+                @click="getToken(conversation.id, conversation.title)"
+                >Make a call</b-button
+              >
+              <b-button
+                v-if="conversation.owner.id === user.id"
+                variant="danger"
+                size="sm"
+                @click="getToken(conversation.id, conversation.title)"
+                >Delete</b-button
+              >
+            </div>
           </b-card>
         </div>
       </div>
@@ -118,14 +125,6 @@
           >
           </b-form-input>
         </b-form-group>
-        <b-form-group>
-          <b-form-input
-            v-model="conversationReq.imageUrl"
-            required
-            placeholder="Enter image url"
-          >
-          </b-form-input>
-        </b-form-group>
 
         <b-form-group>
           <b-form-tags
@@ -176,7 +175,6 @@ export default {
       token: undefined,
       conversationReq: {
         title: undefined,
-        imageUrl: undefined,
         usernameList: [],
       },
       wsClient: undefined,
@@ -197,12 +195,28 @@ export default {
       heartbeatOutgoing: 4000,
     })
     this.wsClient.onConnect = (frame) => {
-      this.wsClient.subscribe('/topic/' + this.user.username, (message) => {
-        const data = JSON.parse(message.body)
-        this.inCommingConversationId = data.conversationId
-        this.conversationTitle = data.conversationTitle
-        this.inCommingCallModalShow = true
-      })
+      this.wsClient.subscribe(
+        '/topic/' + this.user.username + '.call-event',
+        (message) => {
+          const data = JSON.parse(message.body)
+          this.inCommingConversationId = data.conversationId
+          this.conversationTitle = data.conversationTitle
+          this.inCommingCallModalShow = true
+        }
+      )
+      this.wsClient.subscribe(
+        '/topic/' + this.user.username + '.conversations',
+        (message) => {
+          const data = JSON.parse(message.body)
+          if (data.type === 'CREATE') {
+            this.conversations.unshift(data.data)
+          } else if (data.type === 'DELETE') {
+            this.conversations = this.conversations.filter(
+              (conversation) => conversation.id !== data.data.id
+            )
+          }
+        }
+      )
     }
     this.wsClient.onStompError = (frame) => {}
     this.wsClient.activate()
@@ -216,12 +230,11 @@ export default {
 
   methods: {
     async createConversation(conversationReq) {
-      const response = await this.$axios.$post('/conversations', {
+      await this.$axios.$post('/conversations', {
         title: conversationReq.title,
         members: conversationReq.usernameList,
         imageUrl: conversationReq.imageUrl,
       })
-      this.conversations.unshift(response.data)
       this.conversationReq.title = undefined
       this.conversationReq.users = []
       this.conversationReq.imageUrl = undefined
