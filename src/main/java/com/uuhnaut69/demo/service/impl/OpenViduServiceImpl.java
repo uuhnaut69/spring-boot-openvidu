@@ -52,6 +52,10 @@ public class OpenViduServiceImpl implements OpenViduService {
         new TokenOptions.Builder()
             .data(currentUsernameLogin.get())
             .role(OpenViduRole.PUBLISHER)
+            .kurentoOptions(
+                new KurentoOptions.Builder()
+                    .allowedFilters(new String[] {"GStreamerFilter", "FaceOverlayFilter"})
+                    .build())
             .build();
 
     if (Objects.nonNull(mapSessions.get(conversationId))) {

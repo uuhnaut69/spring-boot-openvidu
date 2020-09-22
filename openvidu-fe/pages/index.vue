@@ -79,12 +79,12 @@
                 :variant="isEnabledMic ? '' : 'danger'"
             /></b-button>
             <b-button
-              :class="isEnabledScreenShare ? '' : 'active'"
+              :class="isEnabledScreenShare ? 'active' : ''"
               variant="warning"
-              @click="toggleScreenShare"
+              @click="toggleScreenShare(token)"
               ><b-icon
-                :icon="isEnabledScreenShare ? 'display' : 'display-fill'"
-                :variant="isEnabledScreenShare ? '' : 'danger'"
+                :icon="isEnabledScreenShare ? 'display-fill' : 'display'"
+                :variant="isEnabledScreenShare ? 'danger' : ''"
             /></b-button>
             <b-button variant="warning" @click="revokeToken"
               ><b-icon icon="power" variant="danger"
@@ -105,6 +105,7 @@
             @click.native="updateMainVideoStreamManager(sub)"
           />
         </div>
+        <div id="html-element-id"></div>
       </div>
     </div>
 
@@ -270,6 +271,7 @@ export default {
           '/conversations/' + conversationId + '/generate'
         )
         this.joinSession(response.data)
+        this.token = response.data
       } catch (error) {
         console.log(error)
       }
@@ -360,7 +362,7 @@ export default {
       this.isEnabledMic = !this.isEnabledMic
       this.publisher.publishAudio(this.isEnabledMic)
     },
-    toggleScreenShare() {
+    toggleScreenShare(token) {
       this.isEnabledScreenShare = !this.isEnabledScreenShare
     },
   },
