@@ -81,12 +81,12 @@
             <b-button
               :class="isEnabledScreenShare ? 'active' : ''"
               variant="warning"
-              @click="toggleScreenShare(token)"
+              @click="toggleScreenShare()"
               ><b-icon
                 :icon="isEnabledScreenShare ? 'display-fill' : 'display'"
                 :variant="isEnabledScreenShare ? 'danger' : ''"
             /></b-button>
-            <b-button variant="warning" @click="revokeToken"
+            <b-button variant="warning" @click="leaveSession"
               ><b-icon icon="power" variant="danger"
             /></b-button>
           </b-button-group>
@@ -105,7 +105,6 @@
             @click.native="updateMainVideoStreamManager(sub)"
           />
         </div>
-        <div id="html-element-id"></div>
       </div>
     </div>
 
@@ -187,6 +186,7 @@ export default {
       session: undefined,
       mainStreamManager: undefined,
       publisher: undefined,
+      screenSharePublisher: undefined,
       subscribers: [],
       sessionId: undefined,
       inCommingConversationId: undefined,
@@ -248,7 +248,7 @@ export default {
     if (this.wsClient !== undefined) {
       this.wsClient.deactivate()
     }
-    this.revokeToken()
+    this.leaveSession()
   },
 
   methods: {
@@ -334,7 +334,7 @@ export default {
     },
     leaveSession() {
       if (this.session) this.session.disconnect()
-
+      this.$axios.$post('/conversations/' + this.conversationId + '/revoke/')
       this.session = undefined
       this.mainStreamManager = undefined
       this.publisher = undefined
@@ -350,10 +350,6 @@ export default {
       if (this.mainStreamManager === stream) return
       this.mainStreamManager = stream
     },
-    revokeToken() {
-      this.$axios.$post('/conversations/' + this.conversationId + '/revoke/')
-      this.leaveSession()
-    },
     toggleCamera() {
       this.isEnabledCamera = !this.isEnabledCamera
       this.publisher.publishVideo(this.isEnabledCamera)
@@ -362,7 +358,7 @@ export default {
       this.isEnabledMic = !this.isEnabledMic
       this.publisher.publishAudio(this.isEnabledMic)
     },
-    toggleScreenShare(token) {
+    toggleScreenShare() {
       this.isEnabledScreenShare = !this.isEnabledScreenShare
     },
   },

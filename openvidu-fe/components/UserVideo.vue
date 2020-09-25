@@ -1,7 +1,7 @@
 <template>
   <div v-if="streamManager">
     <div>
-      <h5>{{ clientData }}</h5>
+      <h5 class="text-white">{{ clientData }}</h5>
     </div>
     <ov-video :stream-manager="streamManager" />
   </div>
