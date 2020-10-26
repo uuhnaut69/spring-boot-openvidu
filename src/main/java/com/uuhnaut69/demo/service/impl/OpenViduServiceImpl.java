@@ -1,11 +1,9 @@
 package com.uuhnaut69.demo.service.impl;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
+import com.google.common.base.Strings;
 import com.uuhnaut69.demo.model.Conversation;
-import com.uuhnaut69.demo.rest.payload.response.CallEvent;
 import com.uuhnaut69.demo.rest.exception.InternalServerErrorException;
+import com.uuhnaut69.demo.rest.payload.response.CallEvent;
 import com.uuhnaut69.demo.service.ConversationService;
 import com.uuhnaut69.demo.service.OpenViduService;
 import io.openvidu.java.client.*;
@@ -18,6 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.uuhnaut69.demo.security.SecurityUtils.getCurrentUserLogin;
 
@@ -36,9 +35,9 @@ public class OpenViduServiceImpl implements OpenViduService {
 
   private final SimpMessagingTemplate messagingTemplate;
 
-  private Map<String, Session> mapSessions = Maps.newConcurrentMap();
+  private Map<String, Session> mapSessions = new ConcurrentHashMap<>();
 
-  private Multimap<String, Map<String, String>> mapSessionNamesTokens = ArrayListMultimap.create();
+  private Map<String, Map<String, String>> mapSessionNamesTokens = new ConcurrentHashMap<>();
 
   @Override
   public String createToken(String conversationId) {
@@ -62,9 +61,7 @@ public class OpenViduServiceImpl implements OpenViduService {
       log.info("Session of conversation {} already exists", conversationId);
       try {
         token = this.mapSessions.get(conversationId).generateToken(tokenOptions);
-        Map<String, String> tokenInfo = Maps.newConcurrentMap();
-        tokenInfo.put(currentUsernameLogin.get(), token);
-        this.mapSessionNamesTokens.get(conversationId).add(tokenInfo);
+        this.mapSessionNamesTokens.get(conversationId).put(currentUsernameLogin.get(), token);
       } catch (OpenViduJavaClientException | OpenViduHttpException e) {
         log.error(e.getMessage());
       }
@@ -75,9 +72,7 @@ public class OpenViduServiceImpl implements OpenViduService {
         token = session.generateToken(tokenOptions);
         this.mapSessions.put(conversationId, session);
 
-        Map<String, String> tokenInfo = Maps.newConcurrentMap();
-        tokenInfo.put(currentUsernameLogin.get(), token);
-        this.mapSessionNamesTokens.get(conversationId).add(tokenInfo);
+        this.mapSessionNamesTokens.get(conversationId).put(currentUsernameLogin.get(), token);
 
         // Push notification for members in conversation
         Conversation conversation = conversationService.findById(UUID.fromString(conversationId));
@@ -103,9 +98,8 @@ public class OpenViduServiceImpl implements OpenViduService {
     if (currentUsernameLogin.isPresent()
         && Objects.nonNull(this.mapSessions.get(conversationId))
         && Objects.nonNull(this.mapSessionNamesTokens.get(conversationId))
-        && this.mapSessionNamesTokens
-            .get(conversationId)
-            .removeIf(tokenInfo -> tokenInfo.containsKey(currentUsernameLogin.get()))
+        && !Strings.isNullOrEmpty(
+            this.mapSessionNamesTokens.get(conversationId).remove(currentUsernameLogin.get()))
         && this.mapSessionNamesTokens.get(conversationId).isEmpty()) {
 
       // If session has no connection -> Remove it
