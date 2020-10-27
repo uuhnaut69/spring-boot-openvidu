@@ -71,8 +71,9 @@ public class OpenViduServiceImpl implements OpenViduService {
         Session session = this.openVidu.createSession();
         token = session.generateToken(tokenOptions);
         this.mapSessions.put(conversationId, session);
-
-        this.mapSessionNamesTokens.get(conversationId).put(currentUsernameLogin.get(), token);
+        Map<String, String> tokenInfo = new ConcurrentHashMap<>();
+        tokenInfo.put(currentUsernameLogin.get(), token);
+        this.mapSessionNamesTokens.put(conversationId, tokenInfo);
 
         // Push notification for members in conversation
         Conversation conversation = conversationService.findById(UUID.fromString(conversationId));
